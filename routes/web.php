@@ -10,9 +10,19 @@ Route::get('/', function () {
 });
 
 Auth::routes();
-Route::resource('contactos', App\Http\Controllers\ContactoController::class)->middleware('auth');
 
-Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+Route::resource('contactos', App\Http\Controllers\ContactoController::class);
+
+Route::middleware(['auth','role:admin'])->group(function () {
+    Route::get('contactos', [App\Http\Controllers\ContactoController::class, 'index'])->name('contactos.index');
+});
+
+
+Route::middleware(['auth','role:user'])->group(function () {
+    Route::get('/home', [App\Http\Controllers\HomeController::class, 'index'])->name('home');
+});
+
+
 
 Route::get('/admins', function (){
    $role = role::find(1);
